@@ -10,7 +10,7 @@ import { formatRelative, cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  MessageSquare, Plus, Trash2, Send, Bot, User, Loader2,
+  MessageSquare, Plus, Trash2, Send, Bot, User,
   FileText, ChevronRight, Sparkles, PanelLeftClose, Pencil, PanelLeft, Check, X
 } from "lucide-react";
 

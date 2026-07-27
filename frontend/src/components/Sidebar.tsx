@@ -10,7 +10,7 @@ const nav = [
 ];
 
 export function Sidebar() {
-  const { isOpen, isMobile, close } = useSidebar();
+  const { isOpen, close } = useSidebar();
 
   return (
     <>

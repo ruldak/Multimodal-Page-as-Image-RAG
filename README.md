@@ -146,14 +146,14 @@ GEMINI_API_KEY=your_gemini_api_key_here
 ### 2. Launch Services with Docker
 Run the full service stack (FastAPI web server, React frontend, Celery worker, Redis queue, PostgreSQL database, and LanceDB volume mount) from the root folder:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 Once the stack is running, you can access the frontend by opening your browser at `http://localhost:3000`.
 
 ### 3. Run Database Migrations
 Initialize the schema and tables in the PostgreSQL container. Open a new terminal instance in the root folder:
 ```bash
-docker-compose exec api alembic upgrade head
+docker compose exec api alembic upgrade head
 ```
 
 ### 4. Run the Frontend Locally (Optional)

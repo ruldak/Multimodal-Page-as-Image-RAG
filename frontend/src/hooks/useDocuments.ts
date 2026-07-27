@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { api } from "@/lib/api";
-import type { Document, DocumentDetail, DocumentStatus } from "@/types";
+import type { Document, DocumentDetail } from "@/types";
 
 export function useDocuments() {
   const [docs, setDocs] = useState<Document[]>([]);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import * as React from "react";
 import { useDocuments } from "@/hooks/useDocuments";
 import { useToast } from "@/context/ToastContext";
 import { CONFIG } from "@/lib/config";
@@ -11,7 +11,6 @@ import {
   Upload, FileText, Trash2, Eye, X, ChevronLeft, Loader2,
   AlertTriangle, CheckCircle2, Clock, Image as ImageIcon
 } from "lucide-react";
-import type { Document } from "@/types";
 
 const statusConfig = {
   pending: { icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
@@ -28,9 +27,9 @@ function getImageUrl(path: string) {
 export function DocumentsPage() {
   const { docs, loading, detail, detailLoading, upload, remove, getDetail, pollStatus, refresh } = useDocuments();
   const { toast } = useToast();
-  const [dragOver, setDragOver] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = React.useState(false);
+  const [uploading, setUploading] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
 
   const handleUpload = async (file: File) => {
     if (file.type !== "application/pdf") {
@@ -54,7 +53,7 @@ export function DocumentsPage() {
     if (e.dataTransfer.files[0]) handleUpload(e.dataTransfer.files[0]);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const pending = docs.filter((d) => d.status !== "indexed" && d.status !== "failed");
     if (!pending.length) return;
     const iv = setInterval(() => {

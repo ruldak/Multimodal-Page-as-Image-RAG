@@ -25,7 +25,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           !isMobile && isOpen ? "lg:ml-64" : "ml-0"
         )}
       >
-        <Header />
+        <Header title="halo" />
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
           {children}
         </main>
