@@ -156,16 +156,36 @@ Initialize the schema and tables in the PostgreSQL container. Open a new termina
 docker compose exec api alembic upgrade head
 ```
 
-### 4. Run the Frontend Locally (Optional)
-If you prefer running the React frontend outside of Docker for active UI development:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Then open your browser at `http://localhost:5173`.
+### 4. Use Caddy as a Unified Reverse Proxy (Optional)
+By default the Docker stack exposes the API on `http://localhost:8000` and the frontend on `http://localhost:3000`. A `Caddyfile` is already provided at the project **root** so you can collapse both entry points into a single port (`8090`) — no configuration is required.
 
-The frontend uses Vite to proxy API calls to the backend. If you want to test against a local backend instead of the default configured target, update the proxy settings in `frontend/vite.config.ts`.
+**Step 1 — Install Caddy** (pick your platform):
+
+- **Debian / Ubuntu** (official apt repo):
+  ```bash
+  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/deb.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+  sudo apt update
+  sudo apt install caddy
+  ```
+- **macOS** (Homebrew):
+  ```bash
+  brew install caddy
+  ```
+- **Windows** or other platforms: Grab the prebuilt binary from the [official Caddy downloads page](https://caddyserver.com/download).
+
+**Step 2 — Run Caddy** from the project root, pointing at the included `Caddyfile`:
+
+```bash
+caddy run --config Caddyfile
+```
+
+Once Caddy is running, the **whole app is ready to use — just open `http://localhost:8090` in your browser**. The preconfigured `Caddyfile` will automatically:
+- Forward `/api/*` and `/data/*` requests to the FastAPI backend on port `8000`.
+- Forward all other traffic to the frontend on port `3000` (Docker).
+
+From this single URL you'll get the full RAG experience: upload PDFs, watch them get indexed, and chat with the documents in the multimodal UI.
 
 ### 5. Test the Streaming Chat UI (Lightweight Tester)
 To easily test the Server-Sent Events (SSE) streaming endpoint without building a full React/Vue frontend, this project includes a standalone, user-friendly tester (`test.html`).
