@@ -146,9 +146,9 @@ GEMINI_API_KEY=your_gemini_api_key_here
 ### 2. Launch Services with Docker
 Run the full service stack (FastAPI web server, React frontend, Celery worker, Redis queue, PostgreSQL database, and LanceDB volume mount) from the root folder:
 ```bash
+cd ..
 docker compose up --build
 ```
-Once the stack is running, you can access the frontend by opening your browser at `http://localhost:3000`.
 
 ### 3. Run Database Migrations
 Initialize the schema and tables in the PostgreSQL container. Open a new terminal instance in the root folder:
@@ -156,7 +156,7 @@ Initialize the schema and tables in the PostgreSQL container. Open a new termina
 docker compose exec api alembic upgrade head
 ```
 
-### 4. Use Caddy as a Unified Reverse Proxy (Optional)
+### 4. Use Caddy as a Unified Reverse Proxy
 By default the Docker stack exposes the API on `http://localhost:8000` and the frontend on `http://localhost:3000`. A `Caddyfile` is already provided at the project **root** so you can collapse both entry points into a single port (`8090`) — no configuration is required.
 
 **Step 1 — Install Caddy** (pick your platform):
