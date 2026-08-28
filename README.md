@@ -113,12 +113,12 @@ graph TD
 │   │   ├── hooks/         # Custom React hooks
 │   │   ├── lib/           # API client and utility helpers
 │   │   └── types/         # Shared TypeScript types
+│   ├── Caddyfile          # Caddy reverse proxy config (used inside Docker container)
+│   ├── Dockerfile         # Multi-stage build: Vite build + Caddy static server
 │   ├── package.json       # Frontend dependencies and scripts
 │   ├── vite.config.ts     # Vite config and API proxy settings
 │   └── index.html         # Frontend entry page
 ├── docker-compose.yml     # Local orchestration for API, Redis, Celery, Postgres, and Frontend
-├── Dockerfile.backend     # Production-grade backend Docker build
-├── Dockerfile.frontend    # Production-grade frontend Docker build
 └── README.md
 ```
 
@@ -144,7 +144,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ### 2. Launch Services with Docker
-Run the full service stack (FastAPI web server, React frontend, Celery worker, Redis queue, PostgreSQL database, and LanceDB volume mount) from the root folder:
+Run the full service stack (FastAPI web server, React frontend served via **Caddy** with built-in reverse proxy, Celery worker, Redis queue, PostgreSQL database, and LanceDB volume mount) from the root folder:
 ```bash
 cd ..
 docker compose up --build
@@ -156,38 +156,7 @@ Initialize the schema and tables in the PostgreSQL container. Open a new termina
 docker compose exec api alembic upgrade head
 ```
 
-### 4. Use Caddy as a Unified Reverse Proxy
-By default the Docker stack exposes the API on `http://localhost:8000` and the frontend on `http://localhost:3000`. A `Caddyfile` is already provided at the project **root** so you can collapse both entry points into a single port (`8090`) — no configuration is required.
-
-**Step 1 — Install Caddy** (pick your platform):
-
-- **Debian / Ubuntu** (official apt repo):
-  ```bash
-  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/deb.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-  sudo apt update
-  sudo apt install caddy
-  ```
-- **macOS** (Homebrew):
-  ```bash
-  brew install caddy
-  ```
-- **Windows** or other platforms: Grab the prebuilt binary from the [official Caddy downloads page](https://caddyserver.com/download).
-
-**Step 2 — Run Caddy** from the project root, pointing at the included `Caddyfile`:
-
-```bash
-caddy run --config Caddyfile
-```
-
-Once Caddy is running, the **whole app is ready to use — just open `http://localhost:8090` in your browser**. The preconfigured `Caddyfile` will automatically:
-- Forward `/api/*` and `/data/*` requests to the FastAPI backend on port `8000`.
-- Forward all other traffic to the frontend on port `3000` (Docker).
-
-From this single URL you'll get the full RAG experience: upload PDFs, watch them get indexed, and chat with the documents in the multimodal UI.
-
-### 5. Test the Streaming Chat UI (Lightweight Tester)
+### 4. Test the Streaming Chat UI (Lightweight Tester)
 To easily test the Server-Sent Events (SSE) streaming endpoint without building a full React/Vue frontend, this project includes a standalone, user-friendly tester (`test.html`).
 
 **Step 1: Serve the HTML file locally**
