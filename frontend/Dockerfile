@@ -6,14 +6,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci --omit=dev
-
-COPY --from=builder /app/dist ./dist
-
+FROM caddy:2-alpine
+COPY --from=builder /app/dist /srv
+COPY Caddyfile /etc/caddy/Caddyfile
 EXPOSE 3000
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "3000"]
